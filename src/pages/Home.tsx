@@ -26,7 +26,9 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
     });
   }, [postRepository]);
 
-  const onCloseForm = () => setIsWriting(false);
+  const onCloseForm = () => {
+    isWriting && setIsWriting(false);
+  };
 
   const onDelete = (id: string) => {
     setData((cur: GoalsResType) => {
@@ -76,6 +78,7 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
           key={key}
           onDelete={onDelete}
           onClickEditCurrent={onClickEditCurrent}
+          onCreatOrUpdateGoal={onCreatOrUpdateGoal}
         />
       ))}
       {isOpenModal && editingGoal ? (

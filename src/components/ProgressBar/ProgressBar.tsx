@@ -23,6 +23,7 @@ const ProgressBar: FC<ProgressBarProps> = ({ data, onClickEditCurrent }) => {
             <p className='infoMessage'>현재 값을 수정하려면 클릭해주세요!</p>
           </EditCurrent>
           <CurrentText percent={getPercent()}>
+            ↑<br />
             {data.current}
             {data.unit}
           </CurrentText>
@@ -55,12 +56,14 @@ const Bar = styled.div<{ percent: number }>`
     background-color: ${({ theme }) => theme.color.pink};
     border-radius: 25px;
     position: relative;
+    transition: all 1s;
   }
 `;
 
-const CurrentText = styled.span<{ percent: number }>`
+const CurrentText = styled.p<{ percent: number }>`
+  width: 5rem;
   position: absolute;
-  right: -0.7rem;
+  right: -2.5rem;
   bottom: -2.8rem;
   font-size: 1.4rem;
   font-weight: 600;
@@ -74,8 +77,9 @@ const CurrentText = styled.span<{ percent: number }>`
 `;
 
 const GoalText = styled.span`
+  width: 7rem;
   position: absolute;
-  right: 0;
+  right: -3.5rem;
   font-size: 1.4rem;
   font-weight: 600;
   text-align: center;

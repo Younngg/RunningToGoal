@@ -20,7 +20,7 @@ const CurrentModal: FC<CurrenModalProps> = ({
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (currentInput) {
+    if (currentInput && goal.current + parseInt(currentInput) <= goal.goal) {
       const newGoal: GoalType = {
         ...goal,
         current: goal.current + parseInt(currentInput),
@@ -29,11 +29,13 @@ const CurrentModal: FC<CurrenModalProps> = ({
       onUpdate(newGoal);
       setIsOpenModal(false);
       return;
-    } else alert('모두 입력해주세요');
+    } else if (goal.current + parseInt(currentInput) > goal.goal) {
+      alert('목표치 이상 입력할 수 없습니다.');
+    }
   };
   return (
-    <BackGround onClick={() => setIsOpenModal(false)}>
-      <Modal onClick={(e) => e.stopPropagation()}>
+    <BackGround>
+      <Modal>
         <Title>
           <span>🏃‍♀️{goal.title}</span>
           목표와

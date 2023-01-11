@@ -1,17 +1,35 @@
 import React, { FC, useState } from 'react';
 import styled from 'styled-components';
+import { postRepository } from '../../App';
 import { GoalType } from '../../types/goal';
 import Button from '../Button/Button';
+import GoalForm from '../GoalForm/GoalForm';
 import ProgressBar from '../ProgressBar/ProgressBar';
 
 interface GoalBoxProps {
   data: GoalType;
   onDelete: (id: string) => void;
   onClickEditCurrent: (current: GoalType) => void;
+
+  onCreatOrUpdateGoal: (goal: GoalType) => void;
 }
 
-const GoalBox: FC<GoalBoxProps> = ({ data, onDelete, onClickEditCurrent }) => {
-  return (
+const GoalBox: FC<GoalBoxProps> = ({
+  data,
+  onDelete,
+  onClickEditCurrent,
+  onCreatOrUpdateGoal,
+}) => {
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  return isUpdating ? (
+    <GoalForm
+      postRepository={postRepository}
+      onCloseForm={() => setIsUpdating(false)}
+      onCreatOrUpdateGoal={onCreatOrUpdateGoal}
+      currentGoal={data}
+    />
+  ) : (
     <Container>
       <Top>
         <TitleContainer>
@@ -22,7 +40,10 @@ const GoalBox: FC<GoalBoxProps> = ({ data, onDelete, onClickEditCurrent }) => {
           </Message>
         </TitleContainer>
         <ButtonContainer>
-          <Button content={`${process.env.PUBLIC_URL}/pen.png`} />
+          <Button
+            content={`${process.env.PUBLIC_URL}/pen.png`}
+            onClick={() => setIsUpdating(true)}
+          />
           <Button
             content={`${process.env.PUBLIC_URL}/minus.png`}
             onClick={() => onDelete(data.id)}
