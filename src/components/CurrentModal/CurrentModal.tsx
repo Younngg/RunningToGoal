@@ -32,10 +32,10 @@ const CurrentModal: FC<CurrenModalProps> = ({
     } else alert('모두 입력해주세요');
   };
   return (
-    <BackGround>
-      <Modal>
+    <BackGround onClick={() => setIsOpenModal(false)}>
+      <Modal onClick={(e) => e.stopPropagation()}>
         <Title>
-          <span>{goal.title}</span>
+          <span>🏃‍♀️{goal.title}</span>
           목표와
         </Title>
         <EditForm onSubmit={onSubmit}>
@@ -49,8 +49,8 @@ const CurrentModal: FC<CurrenModalProps> = ({
             <Message>권 더 가까워졌어요.</Message>
           </div>
           <ButtonContainer>
-            <Button content='' type='submit'></Button>
-            <Button content='' onClick={() => setIsOpenModal(false)}></Button>
+            <Button text='추가하기' type='submit'></Button>
+            <Button text='닫기' onClick={() => setIsOpenModal(false)}></Button>
           </ButtonContainer>
         </EditForm>
       </Modal>
