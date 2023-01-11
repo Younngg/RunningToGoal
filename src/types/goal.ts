@@ -4,7 +4,7 @@ export interface GoalType {
   goal: number;
   unit: string;
   id: string;
-  current: 0;
+  current: number;
 }
 
 export interface GoalsResType {

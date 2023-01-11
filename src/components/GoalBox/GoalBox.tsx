@@ -7,9 +7,10 @@ import ProgressBar from '../ProgressBar/ProgressBar';
 interface GoalBoxProps {
   data: GoalType;
   onDelete: (id: string) => void;
+  onClickEditCurrent: (current: GoalType) => void;
 }
 
-const GoalBox: FC<GoalBoxProps> = ({ data, onDelete }) => {
+const GoalBox: FC<GoalBoxProps> = ({ data, onDelete, onClickEditCurrent }) => {
   return (
     <Container>
       <Top>
@@ -28,7 +29,7 @@ const GoalBox: FC<GoalBoxProps> = ({ data, onDelete }) => {
           />
         </ButtonContainer>
       </Top>
-      <ProgressBar data={data} />
+      <ProgressBar data={data} onClickEditCurrent={onClickEditCurrent} />
     </Container>
   );
 };

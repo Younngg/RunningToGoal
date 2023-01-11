@@ -1,23 +1,31 @@
 import React, { FC } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 interface ButtonProps {
-  content: string;
+  content?: string;
+  text?: string;
   onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset' | undefined;
 }
 
-const Button: FC<ButtonProps> = ({ content, onClick }) => {
+const Button: FC<ButtonProps> = ({
+  content,
+  text,
+  onClick,
+  type = 'button',
+}) => {
   return (
-    <ButtonStyle onClick={onClick}>
-      <img src={content} alt='' />
+    <ButtonStyle type={type} onClick={onClick} text={text ? true : false}>
+      {content && <img src={content} alt='' />}
+      {text && text}
     </ButtonStyle>
   );
 };
 
 export default Button;
 
-const ButtonStyle = styled.button`
-  width: 3rem;
+const ButtonStyle = styled.button<{ text?: boolean }>`
+  width: ${({ text }) => (text ? 'fit-content' : '3rem')};
   height: 3rem;
   background-color: white;
   border: 2px solid #cecece;
@@ -25,4 +33,9 @@ const ButtonStyle = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &:hover {
+    transform: scale(1.1);
+    transition: all 0.1s;
+  }
 `;

@@ -18,14 +18,14 @@ export const ValidationInput = styled.input<{ isValid: boolean }>`
   }
 `;
 
-export const Input = styled.input`
-  width: 20rem;
-  font-size: 1.5rem;
-  padding: 0.5rem 1rem;
-
-  &:focus {
-    outline: none;
-  }
+export const Input = styled.input<{ long?: boolean }>`
+  border: none;
+  background-color: #ededed;
+  width: ${({ long }) => (long ? 20 : 14)}rem;
+  height: 3rem;
+  border-radius: 5px;
+  outline: none;
+  text-indent: 1rem;
 `;
 
 export const Textarea = styled.textarea`

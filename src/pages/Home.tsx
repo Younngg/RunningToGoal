@@ -1,11 +1,12 @@
 import React, { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from '../components/Button/Button';
+import CurrentModal from '../components/CurrentModal/CurrentModal';
 import GoalBox from '../components/GoalBox/GoalBox';
 import GoalForm from '../components/GoalForm/GoalForm';
 import { PageContainer } from '../styles/page';
 import PostRepository from './../services/postRepository';
-import { GoalsResType, GoalType } from './../types/goal';
+import type { GoalsResType, GoalType } from './../types/goal';
 
 interface HomeProps {
   postRepository: PostRepository;
@@ -15,6 +16,9 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
   const [data, setData] = useState<GoalsResType>({});
 
   const [isWriting, setIsWriting] = useState(false);
+
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<GoalType>();
 
   useEffect(() => {
     postRepository.syncPosts((posts: GoalsResType) => {
@@ -33,6 +37,21 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
     postRepository.removePost(id);
   };
 
+  const onCreatOrUpdateGoal = (goal: GoalType) => {
+    setData((goals) => {
+      const updated = { ...goals };
+      updated[goal.id] = goal;
+      return updated;
+    });
+
+    postRepository.savePost(goal);
+  };
+
+  const onClickEditCurrent = (current: GoalType) => {
+    setEditingGoal(current);
+    setIsOpenModal(true);
+  };
+
   return (
     <PageContainer>
       <Title>
@@ -45,11 +64,27 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
         />
       </ButtonContainer>
       {isWriting && (
-        <GoalForm postRepository={postRepository} onCloseForm={onCloseForm} />
+        <GoalForm
+          postRepository={postRepository}
+          onCloseForm={onCloseForm}
+          onCreatOrUpdateGoal={onCreatOrUpdateGoal}
+        />
       )}
       {Object.keys(data).map((key) => (
-        <GoalBox data={data[key]} key={key} onDelete={onDelete} />
+        <GoalBox
+          data={data[key]}
+          key={key}
+          onDelete={onDelete}
+          onClickEditCurrent={onClickEditCurrent}
+        />
       ))}
+      {isOpenModal && editingGoal ? (
+        <CurrentModal
+          goal={editingGoal}
+          setIsOpenModal={setIsOpenModal}
+          onUpdate={onCreatOrUpdateGoal}
+        />
+      ) : null}
     </PageContainer>
   );
 };
