@@ -49,7 +49,12 @@ const GoalForm: FC<GoalFormProps> = ({
   const onUpdate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (goalInput && unitInput && goalValueInput !== '0') {
+    if (
+      goalInput &&
+      unitInput &&
+      goalValueInput !== '0' &&
+      parseInt(goalValueInput) >= currentGoal!.current
+    ) {
       const newGoal: GoalType = {
         ...currentGoal!,
         title: goalInput,
@@ -60,7 +65,11 @@ const GoalForm: FC<GoalFormProps> = ({
       onCreatOrUpdateGoal(newGoal);
       onCloseForm();
       return;
-    } else alert('모두 입력해주세요');
+    } else if (parseInt(goalValueInput) < currentGoal!.current) {
+      alert('현재 달성한 값 이하로 변경할 수 없습니다.');
+    } else if (!(goalInput && unitInput && goalValueInput !== '0')) {
+      alert('모두 입력해주세요.');
+    }
   };
 
   return (

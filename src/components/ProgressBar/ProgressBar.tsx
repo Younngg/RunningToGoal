@@ -12,8 +12,6 @@ const ProgressBar: FC<ProgressBarProps> = ({ data, onClickEditCurrent }) => {
     return (data.current / data.goal) * 100;
   };
 
-  console.log(getPercent());
-
   return (
     <Container>
       <Bar percent={getPercent()}>
