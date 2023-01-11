@@ -2,25 +2,33 @@ import React, { FC, useState, FormEvent } from 'react';
 import styled from 'styled-components';
 import Button from '../Button/Button';
 import PostRepository from './../../services/postRepository';
-import { GoalType } from './../../types/goal';
+import type { GoalType } from './../../types/goal';
 import { Input } from './../../styles/form';
 
 interface GoalFormProps {
   postRepository: PostRepository;
   onCloseForm: () => void;
   onCreatOrUpdateGoal: (goal: GoalType) => void;
+  currentGoal?: GoalType;
 }
 
 const GoalForm: FC<GoalFormProps> = ({
   postRepository,
   onCloseForm,
   onCreatOrUpdateGoal,
+  currentGoal,
 }) => {
-  const [goalInput, setGoalInput] = useState('');
-  const [goalValueInput, setGoalValueInput] = useState('0');
-  const [unitInput, setUnitInput] = useState('');
+  const [goalInput, setGoalInput] = useState(
+    currentGoal ? currentGoal.title : ''
+  );
+  const [goalValueInput, setGoalValueInput] = useState(
+    currentGoal ? currentGoal.goal.toString() : '0'
+  );
+  const [unitInput, setUnitInput] = useState(
+    currentGoal ? currentGoal.unit : ''
+  );
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (goalInput && unitInput && goalValueInput !== '0') {
@@ -38,9 +46,26 @@ const GoalForm: FC<GoalFormProps> = ({
     } else alert('모두 입력해주세요');
   };
 
+  const onUpdate = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (goalInput && unitInput && goalValueInput !== '0') {
+      const newGoal: GoalType = {
+        ...currentGoal!,
+        title: goalInput,
+        goal: parseInt(goalValueInput),
+        unit: unitInput,
+      };
+
+      onCreatOrUpdateGoal(newGoal);
+      onCloseForm();
+      return;
+    } else alert('모두 입력해주세요');
+  };
+
   return (
     <Container>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={currentGoal ? onUpdate : onCreate}>
         <Top>
           <Label htmlFor='goal'>목표</Label>
           <Input

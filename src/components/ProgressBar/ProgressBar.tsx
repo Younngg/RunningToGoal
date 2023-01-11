@@ -55,6 +55,7 @@ const Bar = styled.div<{ percent: number }>`
     background-color: ${({ theme }) => theme.color.pink};
     border-radius: 25px;
     position: relative;
+    transition: all 1s;
   }
 `;
 

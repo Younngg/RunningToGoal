@@ -8,9 +8,15 @@ interface GoalBoxProps {
   data: GoalType;
   onDelete: (id: string) => void;
   onClickEditCurrent: (current: GoalType) => void;
+  onClickEditGoal: (current: GoalType) => void;
 }
 
-const GoalBox: FC<GoalBoxProps> = ({ data, onDelete, onClickEditCurrent }) => {
+const GoalBox: FC<GoalBoxProps> = ({
+  data,
+  onDelete,
+  onClickEditCurrent,
+  onClickEditGoal,
+}) => {
   return (
     <Container>
       <Top>
@@ -22,7 +28,10 @@ const GoalBox: FC<GoalBoxProps> = ({ data, onDelete, onClickEditCurrent }) => {
           </Message>
         </TitleContainer>
         <ButtonContainer>
-          <Button content={`${process.env.PUBLIC_URL}/pen.png`} />
+          <Button
+            content={`${process.env.PUBLIC_URL}/pen.png`}
+            onClick={() => onClickEditGoal(data)}
+          />
           <Button
             content={`${process.env.PUBLIC_URL}/minus.png`}
             onClick={() => onDelete(data.id)}
