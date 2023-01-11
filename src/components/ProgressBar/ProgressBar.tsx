@@ -12,6 +12,8 @@ const ProgressBar: FC<ProgressBarProps> = ({ data, onClickEditCurrent }) => {
     return (data.current / data.goal) * 100;
   };
 
+  console.log(getPercent());
+
   return (
     <Container>
       <Bar percent={getPercent()}>
@@ -60,9 +62,10 @@ const Bar = styled.div<{ percent: number }>`
   }
 `;
 
-const CurrentText = styled.span<{ percent: number }>`
+const CurrentText = styled.p<{ percent: number }>`
+  width: 5rem;
   position: absolute;
-  right: -0.7rem;
+  right: -2.5rem;
   bottom: -2.8rem;
   font-size: 1.4rem;
   font-weight: 600;
@@ -76,8 +79,9 @@ const CurrentText = styled.span<{ percent: number }>`
 `;
 
 const GoalText = styled.span`
+  width: 7rem;
   position: absolute;
-  right: 0;
+  right: -3.5rem;
   font-size: 1.4rem;
   font-weight: 600;
   text-align: center;
