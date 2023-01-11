@@ -16,7 +16,6 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
   const [data, setData] = useState<GoalsResType>({});
 
   const [isWriting, setIsWriting] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<GoalType>();
@@ -29,7 +28,6 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
 
   const onCloseForm = () => {
     isWriting && setIsWriting(false);
-    isUpdating && setIsUpdating(false);
   };
 
   const onDelete = (id: string) => {
@@ -56,11 +54,6 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
     setIsOpenModal(true);
   };
 
-  const onClickEditGoal = (current: GoalType) => {
-    setEditingGoal(current);
-    setIsUpdating(true);
-  };
-
   return (
     <PageContainer>
       <Title>
@@ -79,24 +72,15 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
           onCreatOrUpdateGoal={onCreatOrUpdateGoal}
         />
       )}
-      {Object.keys(data).map((key) =>
-        isUpdating && editingGoal ? (
-          <GoalForm
-            postRepository={postRepository}
-            onCloseForm={onCloseForm}
-            onCreatOrUpdateGoal={onCreatOrUpdateGoal}
-            currentGoal={editingGoal}
-          />
-        ) : (
-          <GoalBox
-            data={data[key]}
-            key={key}
-            onDelete={onDelete}
-            onClickEditCurrent={onClickEditCurrent}
-            onClickEditGoal={onClickEditGoal}
-          />
-        )
-      )}
+      {Object.keys(data).map((key) => (
+        <GoalBox
+          data={data[key]}
+          key={key}
+          onDelete={onDelete}
+          onClickEditCurrent={onClickEditCurrent}
+          onCreatOrUpdateGoal={onCreatOrUpdateGoal}
+        />
+      ))}
       {isOpenModal && editingGoal ? (
         <CurrentModal
           goal={editingGoal}

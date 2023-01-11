@@ -1,23 +1,35 @@
 import React, { FC, useState } from 'react';
 import styled from 'styled-components';
+import { postRepository } from '../../App';
 import { GoalType } from '../../types/goal';
 import Button from '../Button/Button';
+import GoalForm from '../GoalForm/GoalForm';
 import ProgressBar from '../ProgressBar/ProgressBar';
 
 interface GoalBoxProps {
   data: GoalType;
   onDelete: (id: string) => void;
   onClickEditCurrent: (current: GoalType) => void;
-  onClickEditGoal: (current: GoalType) => void;
+
+  onCreatOrUpdateGoal: (goal: GoalType) => void;
 }
 
 const GoalBox: FC<GoalBoxProps> = ({
   data,
   onDelete,
   onClickEditCurrent,
-  onClickEditGoal,
+  onCreatOrUpdateGoal,
 }) => {
-  return (
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  return isUpdating ? (
+    <GoalForm
+      postRepository={postRepository}
+      onCloseForm={() => setIsUpdating(false)}
+      onCreatOrUpdateGoal={onCreatOrUpdateGoal}
+      currentGoal={data}
+    />
+  ) : (
     <Container>
       <Top>
         <TitleContainer>
@@ -30,7 +42,7 @@ const GoalBox: FC<GoalBoxProps> = ({
         <ButtonContainer>
           <Button
             content={`${process.env.PUBLIC_URL}/pen.png`}
-            onClick={() => onClickEditGoal(data)}
+            onClick={() => setIsUpdating(true)}
           />
           <Button
             content={`${process.env.PUBLIC_URL}/minus.png`}

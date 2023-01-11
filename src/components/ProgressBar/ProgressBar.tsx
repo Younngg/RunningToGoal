@@ -23,6 +23,7 @@ const ProgressBar: FC<ProgressBarProps> = ({ data, onClickEditCurrent }) => {
             <p className='infoMessage'>현재 값을 수정하려면 클릭해주세요!</p>
           </EditCurrent>
           <CurrentText percent={getPercent()}>
+            ↑<br />
             {data.current}
             {data.unit}
           </CurrentText>

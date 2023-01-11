@@ -7,8 +7,8 @@ import { Container } from './styles/page';
 import PostRepository from './services/postRepository';
 import AuthService from './services/authService';
 
-const postRepository = new PostRepository();
-const authService = new AuthService();
+export const postRepository = new PostRepository();
+export const authService = new AuthService();
 
 function App() {
   return (

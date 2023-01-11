@@ -32,8 +32,8 @@ const CurrentModal: FC<CurrenModalProps> = ({
     } else alert('모두 입력해주세요');
   };
   return (
-    <BackGround onClick={() => setIsOpenModal(false)}>
-      <Modal onClick={(e) => e.stopPropagation()}>
+    <BackGround>
+      <Modal>
         <Title>
           <span>🏃‍♀️{goal.title}</span>
           목표와
