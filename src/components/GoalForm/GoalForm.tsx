@@ -3,13 +3,19 @@ import styled from 'styled-components';
 import Button from '../Button/Button';
 import PostRepository from './../../services/postRepository';
 import { GoalType } from './../../types/goal';
+import { Input } from './../../styles/form';
 
 interface GoalFormProps {
   postRepository: PostRepository;
   onCloseForm: () => void;
+  onCreatOrUpdateGoal: (goal: GoalType) => void;
 }
 
-const GoalForm: FC<GoalFormProps> = ({ postRepository, onCloseForm }) => {
+const GoalForm: FC<GoalFormProps> = ({
+  postRepository,
+  onCloseForm,
+  onCreatOrUpdateGoal,
+}) => {
   const [goalInput, setGoalInput] = useState('');
   const [goalValueInput, setGoalValueInput] = useState('0');
   const [unitInput, setUnitInput] = useState('');
@@ -26,7 +32,7 @@ const GoalForm: FC<GoalFormProps> = ({ postRepository, onCloseForm }) => {
         current: 0,
       };
 
-      postRepository.savePost(newGoal);
+      onCreatOrUpdateGoal(newGoal);
       onCloseForm();
       return;
     } else alert('모두 입력해주세요');
@@ -66,7 +72,10 @@ const GoalForm: FC<GoalFormProps> = ({ postRepository, onCloseForm }) => {
           </div>
         </Bottom>
         <ButtonContainer>
-          <Button content={`${process.env.PUBLIC_URL}/plus.png`} />
+          <Button
+            type='submit'
+            content={`${process.env.PUBLIC_URL}/plus.png`}
+          />
           <Button
             content={`${process.env.PUBLIC_URL}/minus.png`}
             onClick={onCloseForm}
@@ -112,16 +121,6 @@ const Bottom = styled.div`
 const Label = styled.label`
   display: inline-block;
   width: 8rem;
-`;
-
-const Input = styled.input<{ long?: boolean }>`
-  border: none;
-  background-color: #ededed;
-  width: ${({ long }) => (long ? 20 : 14)}rem;
-  height: 3rem;
-  border-radius: 5px;
-  outline: none;
-  text-indent: 1rem;
 `;
 
 const ButtonContainer = styled.div`

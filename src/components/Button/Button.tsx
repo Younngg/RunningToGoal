@@ -4,11 +4,12 @@ import styled from 'styled-components';
 interface ButtonProps {
   content: string;
   onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset' | undefined;
 }
 
-const Button: FC<ButtonProps> = ({ content, onClick }) => {
+const Button: FC<ButtonProps> = ({ content, onClick, type = 'button' }) => {
   return (
-    <ButtonStyle onClick={onClick}>
+    <ButtonStyle type={type} onClick={onClick}>
       <img src={content} alt='' />
     </ButtonStyle>
   );

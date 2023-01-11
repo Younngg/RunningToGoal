@@ -4,9 +4,10 @@ import { GoalType } from '../../types/goal';
 
 interface ProgressBarProps {
   data: GoalType;
+  onClickEditCurrent: (current: GoalType) => void;
 }
 
-const ProgressBar: FC<ProgressBarProps> = ({ data }) => {
+const ProgressBar: FC<ProgressBarProps> = ({ data, onClickEditCurrent }) => {
   const getPercent = () => {
     return (data.current / data.goal) * 100;
   };
@@ -15,7 +16,9 @@ const ProgressBar: FC<ProgressBarProps> = ({ data }) => {
     <Container>
       <Bar percent={getPercent()}>
         <div>
-          <RunningMan src={`${process.env.PUBLIC_URL}/run2.png`} />
+          <EditCurrentButton onClick={() => onClickEditCurrent(data)}>
+            <RunningMan src={`${process.env.PUBLIC_URL}/run2.png`} />
+          </EditCurrentButton>
           <CurrentText percent={getPercent()}>
             {data.current}
             {data.unit}
@@ -76,8 +79,15 @@ const GoalText = styled.span`
 `;
 
 const RunningMan = styled.img`
-  position: absolute;
-  right: -1.5rem;
-  top: -4rem;
   width: 4rem;
+`;
+
+const EditCurrentButton = styled.button`
+  position: absolute;
+  right: -2rem;
+  top: -4rem;
+  width: fit-content;
+  padding: 0;
+  background-color: transparent;
+  border: none;
 `;

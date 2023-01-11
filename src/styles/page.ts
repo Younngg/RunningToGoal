@@ -5,6 +5,8 @@ export const Container = styled.div`
   height: 100vh;
   margin: auto;
   background-color: ${({ theme }) => theme.color.skyblue};
+  overflow: auto;
+  position: relative;
 `;
 
 export const PageContainer = styled.div`
