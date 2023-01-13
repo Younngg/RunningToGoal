@@ -36,8 +36,10 @@ const GoalBox: FC<GoalBoxProps> = ({
         <TitleContainer>
           <Title>🏃‍♀️{data.title}</Title>
           <Message>
-            목표까지 {data.goal - data.current}
-            {data.unit} 남았어요!
+            {data.goal - data.current === 0
+              ? '목표를 달성했어요!🎉'
+              : `목표까지 ${data.goal - data.current}
+            ${data.unit} 남았어요!`}
           </Message>
         </TitleContainer>
         <ButtonContainer>
