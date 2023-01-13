@@ -4,10 +4,10 @@ import { GoalType } from '../../types/goal';
 
 interface ProgressBarProps {
   data: GoalType;
-  onClickEditCurrent: (current: GoalType) => void;
+  getGoalForEdit: (current: GoalType) => void;
 }
 
-const ProgressBar: FC<ProgressBarProps> = ({ data, onClickEditCurrent }) => {
+const ProgressBar: FC<ProgressBarProps> = ({ data, getGoalForEdit }) => {
   const getPercent = () => {
     return (data.current / data.goal) * 100;
   };
@@ -17,7 +17,7 @@ const ProgressBar: FC<ProgressBarProps> = ({ data, onClickEditCurrent }) => {
       <Bar percent={getPercent()}>
         <div>
           <EditCurrent>
-            <EditCurrentButton onClick={() => onClickEditCurrent(data)}>
+            <EditCurrentButton onClick={() => getGoalForEdit(data)}>
               <RunningMan src={`${process.env.PUBLIC_URL}/run2.png`} />
             </EditCurrentButton>
             <p className='infoMessage'>현재 값을 수정하려면 클릭해주세요!</p>
@@ -70,10 +70,11 @@ const CurrentText = styled.p<{ percent: number }>`
   text-align: center;
 
   ${({ percent }) =>
-    !percent &&
-    css`
-      display: none;
-    `}
+    !percent || percent === 100
+      ? css`
+          display: none;
+        `
+      : null}
 `;
 
 const GoalText = styled.span`

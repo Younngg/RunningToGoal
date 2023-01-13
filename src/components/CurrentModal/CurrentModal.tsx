@@ -3,16 +3,23 @@ import styled from 'styled-components';
 import { GoalType } from './../../types/goal';
 import { Input } from './../../styles/form';
 import Button from '../Button/Button';
+import {
+  BackGround,
+  ButtonContainer,
+  Message,
+  Modal,
+  Title,
+} from '../../styles/modal';
 
 interface CurrenModalProps {
   goal: GoalType;
-  setIsOpenModal: Dispatch<React.SetStateAction<boolean>>;
+  onCloseModal: (modal: 'edit' | 'delete') => void;
   onUpdate: (goal: GoalType) => void;
 }
 
 const CurrentModal: FC<CurrenModalProps> = ({
   goal,
-  setIsOpenModal,
+  onCloseModal,
   onUpdate,
 }) => {
   const [currentInput, setCurrentInput] = useState('0');
@@ -27,7 +34,7 @@ const CurrentModal: FC<CurrenModalProps> = ({
       };
 
       onUpdate(newGoal);
-      setIsOpenModal(false);
+      onCloseModal('edit');
       return;
     } else if (goal.current + parseInt(currentInput) > goal.goal) {
       alert('목표치 이상 입력할 수 없습니다.');
@@ -51,8 +58,8 @@ const CurrentModal: FC<CurrenModalProps> = ({
             <Message>권 더 가까워졌어요.</Message>
           </div>
           <ButtonContainer>
-            <Button text='추가하기' type='submit'></Button>
-            <Button text='닫기' onClick={() => setIsOpenModal(false)}></Button>
+            <Button text='닫기' onClick={() => onCloseModal('edit')} />
+            <Button text='추가하기' type='submit' />
           </ButtonContainer>
         </EditForm>
       </Modal>
@@ -62,58 +69,8 @@ const CurrentModal: FC<CurrenModalProps> = ({
 
 export default CurrentModal;
 
-const BackGround = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
-  position: absolute;
-  top: 0;
-  left: 0;
-`;
-
-const Modal = styled.div`
-  width: 40rem;
-  height: 25rem;
-  padding: 3rem;
-  background-color: white;
-  border-radius: 15px;
-`;
-
-const Title = styled.h4`
-  font-size: 1.6rem;
-  margin-bottom: 5rem;
-  span {
-    display: inline-block;
-    margin-right: 1rem;
-    font-size: 1.8rem;
-    font-weight: bold;
-  }
-`;
-
 const EditForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-
-const Message = styled.p`
-  display: inline-block;
-  font-size: 1.6rem;
-  margin-left: 0.5rem;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: end;
-  width: 100%;
-  margin-top: 5rem;
-
-  button {
-    + button {
-      margin-left: 1rem;
-    }
-  }
 `;
