@@ -9,16 +9,17 @@ import ProgressBar from '../ProgressBar/ProgressBar';
 interface GoalBoxProps {
   data: GoalType;
   onDelete: (id: string) => void;
-  onClickEditCurrent: (current: GoalType) => void;
-
+  getGoalForEdit: (current: GoalType) => void;
+  getGoalForDelete: (current: GoalType) => void;
   onCreatOrUpdateGoal: (goal: GoalType) => void;
 }
 
 const GoalBox: FC<GoalBoxProps> = ({
   data,
   onDelete,
-  onClickEditCurrent,
+  getGoalForEdit,
   onCreatOrUpdateGoal,
+  getGoalForDelete,
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -35,7 +36,7 @@ const GoalBox: FC<GoalBoxProps> = ({
         <TitleContainer>
           <Title>🏃‍♀️{data.title}</Title>
           <Message>
-            목표까지 {data.goal}
+            목표까지 {data.goal - data.current}
             {data.unit} 남았어요!
           </Message>
         </TitleContainer>
@@ -46,11 +47,11 @@ const GoalBox: FC<GoalBoxProps> = ({
           />
           <Button
             content={`${process.env.PUBLIC_URL}/minus.png`}
-            onClick={() => onDelete(data.id)}
+            onClick={() => getGoalForDelete(data)}
           />
         </ButtonContainer>
       </Top>
-      <ProgressBar data={data} onClickEditCurrent={onClickEditCurrent} />
+      <ProgressBar data={data} getGoalForEdit={getGoalForEdit} />
     </Container>
   );
 };

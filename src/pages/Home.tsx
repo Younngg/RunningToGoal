@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Button from '../components/Button/Button';
 import CurrentModal from '../components/CurrentModal/CurrentModal';
+import DeleteModal from '../components/DeleteModal/DeleteModal';
 import GoalBox from '../components/GoalBox/GoalBox';
 import GoalForm from '../components/GoalForm/GoalForm';
 import { PageContainer } from '../styles/page';
@@ -17,8 +18,8 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
 
   const [isWriting, setIsWriting] = useState(false);
 
-  const [isOpenModal, setIsOpenModal] = useState(false);
-  const [editingGoal, setEditingGoal] = useState<GoalType>();
+  const [editingGoal, setEditingGoal] = useState<GoalType | null>(null);
+  const [deletingGoal, setDeletingGoal] = useState<GoalType | null>(null);
 
   useEffect(() => {
     postRepository.syncPosts((posts: GoalsResType) => {
@@ -30,6 +31,15 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
     isWriting && setIsWriting(false);
   };
 
+  const onCloseModal = (modal: 'edit' | 'delete') => {
+    if (modal === 'edit') setEditingGoal(null);
+    else if (modal === 'delete') setDeletingGoal(null);
+  };
+
+  const getGoalForDelete = (current: GoalType) => {
+    setDeletingGoal(current);
+  };
+
   const onDelete = (id: string) => {
     setData((cur: GoalsResType) => {
       const updated = { ...cur };
@@ -37,6 +47,7 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
       return updated;
     });
     postRepository.removePost(id);
+    setDeletingGoal(null);
   };
 
   const onCreatOrUpdateGoal = (goal: GoalType) => {
@@ -49,9 +60,8 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
     postRepository.savePost(goal);
   };
 
-  const onClickEditCurrent = (current: GoalType) => {
+  const getGoalForEdit = (current: GoalType) => {
     setEditingGoal(current);
-    setIsOpenModal(true);
   };
 
   return (
@@ -77,15 +87,23 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
           data={data[key]}
           key={key}
           onDelete={onDelete}
-          onClickEditCurrent={onClickEditCurrent}
+          getGoalForEdit={getGoalForEdit}
+          getGoalForDelete={getGoalForDelete}
           onCreatOrUpdateGoal={onCreatOrUpdateGoal}
         />
       ))}
-      {isOpenModal && editingGoal ? (
+      {editingGoal ? (
         <CurrentModal
           goal={editingGoal}
-          setIsOpenModal={setIsOpenModal}
+          onCloseModal={onCloseModal}
           onUpdate={onCreatOrUpdateGoal}
+        />
+      ) : null}
+      {deletingGoal ? (
+        <DeleteModal
+          goal={deletingGoal}
+          onCloseModal={onCloseModal}
+          onDelete={onDelete}
         />
       ) : null}
     </PageContainer>
