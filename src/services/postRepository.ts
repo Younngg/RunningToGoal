@@ -15,8 +15,8 @@ class PostRepository {
     this.db = getDatabase(firebaseApp);
   }
 
-  syncPosts(onUpdate: any) {
-    const postsRef = ref(this.db, `posts/`);
+  syncPosts(userId: string, onUpdate: any) {
+    const postsRef = ref(this.db, `${userId}/posts/`);
     onValue(postsRef, (snapshot) => {
       const data = snapshot.val();
       data && onUpdate(data);
@@ -24,12 +24,12 @@ class PostRepository {
     return () => off(postsRef);
   }
 
-  savePost(post: any) {
-    set(ref(this.db, `posts/${post.id}`), post);
+  savePost(userId: string, post: any) {
+    set(ref(this.db, `${userId}/posts/${post.id}`), post);
   }
 
-  removePost(id: any) {
-    remove(ref(this.db, `posts/${id}`));
+  removePost(userId: string, id: any) {
+    remove(ref(this.db, `${userId}/posts/${id}`));
   }
 }
 

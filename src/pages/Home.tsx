@@ -1,5 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import { authService } from '../App';
 import Button from '../components/Button/Button';
 import CurrentModal from '../components/CurrentModal/CurrentModal';
 import DeleteModal from '../components/DeleteModal/DeleteModal';
@@ -14,6 +16,9 @@ interface HomeProps {
 }
 
 const Home: FC<HomeProps> = ({ postRepository }) => {
+  const { state } = useLocation();
+  const [userId, setUserId] = useState(state && state.id);
+
   const [data, setData] = useState<GoalsResType>({});
 
   const [isWriting, setIsWriting] = useState(false);
@@ -22,10 +27,27 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
   const [deletingGoal, setDeletingGoal] = useState<GoalType | null>(null);
 
   useEffect(() => {
-    postRepository.syncPosts((posts: GoalsResType) => {
+    if (!userId) {
+      return;
+    }
+    const stopSync = postRepository.syncPosts(userId, (posts: GoalsResType) => {
       setData(posts);
     });
-  }, [postRepository]);
+
+    return () => stopSync();
+  }, [postRepository, userId]);
+
+  useEffect(() => {
+    authService.onAuthChange((user: { uid: any }) => {
+      if (user) {
+        setUserId(user.uid);
+      } else setUserId(null);
+    });
+  }, []);
+
+  const onLogout = () => {
+    authService.logout();
+  };
 
   const onCloseForm = () => {
     isWriting && setIsWriting(false);
@@ -46,7 +68,7 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
       delete updated[id];
       return updated;
     });
-    postRepository.removePost(id);
+    postRepository.removePost(userId, id);
     setDeletingGoal(null);
   };
 
@@ -57,12 +79,16 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
       return updated;
     });
 
-    postRepository.savePost(goal);
+    postRepository.savePost(userId, goal);
   };
 
   const getGoalForEdit = (current: GoalType) => {
     setEditingGoal(current);
   };
+
+  if (!userId) {
+    return <Navigate to='/login' />;
+  }
 
   return (
     <PageContainer>
@@ -106,6 +132,7 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
           onDelete={onDelete}
         />
       ) : null}
+      <Button text='로그아웃' onClick={onLogout} />
     </PageContainer>
   );
 };
