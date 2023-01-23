@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import { authService } from '../App';
 import Button from '../components/Button/Button';
 
@@ -26,10 +27,18 @@ const Login = () => {
   });
 
   return (
-    <div>
+    <Container>
       <Button text='로그인' onClick={onLogin} />
-    </div>
+    </Container>
   );
 };
 
 export default Login;
+
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
