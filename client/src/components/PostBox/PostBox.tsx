@@ -30,7 +30,7 @@ const PostBox: FC<PostBoxProps> = ({
             {data.goal - data.current === 0
               ? '목표를 달성했어요!🎉'
               : `목표까지 ${data.goal - data.current}
-            ${data.unit} 남았어요!`}
+            ${data.unit} 남았어요!💪`}
           </Message>
         </TitleContainer>
         <ButtonContainer>
@@ -58,6 +58,13 @@ const Container = styled.div`
   border-radius: 20px;
   padding: 3rem 4rem;
   margin-bottom: 3rem;
+  position: relative;
+
+  &:hover {
+    transition: all 0.2s;
+    transform: translateY(-1rem);
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
+  }
 `;
 
 const Top = styled.div`

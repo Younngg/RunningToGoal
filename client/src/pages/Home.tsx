@@ -43,7 +43,7 @@ const Home = () => {
   const onLogout = () => {
     authService.logout();
     localStorage.removeItem('token');
-    navigate('/');
+    navigate('/login');
   };
 
   const onCloseForm = () => {
