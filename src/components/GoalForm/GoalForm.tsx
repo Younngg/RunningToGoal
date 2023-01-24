@@ -1,23 +1,17 @@
 import React, { FC, useState, FormEvent } from 'react';
 import styled from 'styled-components';
 import Button from '../Button/Button';
-import PostRepository from './../../services/postRepository';
-import type { GoalType } from './../../types/goal';
+import type { GoalType, PostReqType } from './../../types/goal';
 import { Input } from './../../styles/form';
+import useCreatePost from '../../queries/useCreatePost';
+import useUpdatePost from './../../queries/useUpdatePost';
 
 interface GoalFormProps {
-  postRepository: PostRepository;
   onCloseForm: () => void;
-  onCreatOrUpdateGoal: (goal: GoalType) => void;
   currentGoal?: GoalType;
 }
 
-const GoalForm: FC<GoalFormProps> = ({
-  postRepository,
-  onCloseForm,
-  onCreatOrUpdateGoal,
-  currentGoal,
-}) => {
+const GoalForm: FC<GoalFormProps> = ({ onCloseForm, currentGoal }) => {
   const [goalInput, setGoalInput] = useState(
     currentGoal ? currentGoal.title : ''
   );
@@ -28,19 +22,20 @@ const GoalForm: FC<GoalFormProps> = ({
     currentGoal ? currentGoal.unit : ''
   );
 
+  const { mutate: createPostMutate } = useCreatePost();
+  const { mutate: updatePostMutate } = useUpdatePost();
+
   const onCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (goalInput && unitInput && goalValueInput !== '0') {
-      const newGoal: GoalType = {
-        id: Date.now().toString(),
+      const newGoal: PostReqType = {
         title: goalInput,
         goal: parseInt(goalValueInput),
         unit: unitInput,
-        current: 0,
       };
 
-      onCreatOrUpdateGoal(newGoal);
+      createPostMutate(newGoal);
       onCloseForm();
       return;
     } else alert('모두 입력해주세요');
@@ -48,21 +43,22 @@ const GoalForm: FC<GoalFormProps> = ({
 
   const onUpdate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (
       goalInput &&
       unitInput &&
       goalValueInput !== '0' &&
       parseInt(goalValueInput) >= currentGoal!.current
     ) {
-      const newGoal: GoalType = {
-        ...currentGoal!,
-        title: goalInput,
-        goal: parseInt(goalValueInput),
-        unit: unitInput,
+      const updateGoal: { id: string; post: PostReqType } = {
+        id: currentGoal!.id,
+        post: {
+          title: goalInput,
+          goal: parseInt(goalValueInput),
+          unit: unitInput,
+          current: currentGoal!.current,
+        },
       };
-
-      onCreatOrUpdateGoal(newGoal);
+      updatePostMutate(updateGoal);
       onCloseForm();
       return;
     } else if (parseInt(goalValueInput) < currentGoal!.current) {
@@ -108,10 +104,10 @@ const GoalForm: FC<GoalFormProps> = ({
         <ButtonContainer>
           <Button
             type='submit'
-            content={`${process.env.PUBLIC_URL}/plus.png`}
+            content='https://res.cloudinary.com/dtdzphcq7/image/upload/v1674479809/plus_dkzsdb.png'
           />
           <Button
-            content={`${process.env.PUBLIC_URL}/minus.png`}
+            content='https://res.cloudinary.com/dtdzphcq7/image/upload/v1674479809/minus_rt3ktt.png'
             onClick={onCloseForm}
           />
         </ButtonContainer>

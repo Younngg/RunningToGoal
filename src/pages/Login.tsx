@@ -7,14 +7,11 @@ import Button from '../components/Button/Button';
 const Login = () => {
   const navigate = useNavigate();
 
-  const goToHome = (userId: string) => {
-    navigate('/', { state: { id: userId } });
-  };
-
   const onLogin = async () => {
     try {
       const data = await authService.login('Google');
-      goToHome(data.user.uid);
+      localStorage.setItem('token', data.user.uid);
+      navigate('/');
     } catch (err) {
       console.log(err);
     }
@@ -22,7 +19,8 @@ const Login = () => {
 
   useEffect(() => {
     authService.onAuthChange((user: { id: string }) => {
-      user && goToHome(user.id);
+      localStorage.setItem('token', user.id);
+      user && navigate('id');
     });
   });
 

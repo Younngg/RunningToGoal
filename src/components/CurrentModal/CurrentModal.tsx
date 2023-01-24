@@ -1,8 +1,9 @@
 import React, { FC, Dispatch, useState, FormEvent } from 'react';
 import styled from 'styled-components';
-import { GoalType } from './../../types/goal';
+import { GoalType, PostReqType } from './../../types/goal';
 import { Input } from './../../styles/form';
 import Button from '../Button/Button';
+import useUpdatePost from './../../queries/useUpdatePost';
 import {
   BackGround,
   ButtonContainer,
@@ -14,26 +15,27 @@ import {
 interface CurrenModalProps {
   goal: GoalType;
   onCloseModal: (modal: 'edit' | 'delete') => void;
-  onUpdate: (goal: GoalType) => void;
 }
 
-const CurrentModal: FC<CurrenModalProps> = ({
-  goal,
-  onCloseModal,
-  onUpdate,
-}) => {
+const CurrentModal: FC<CurrenModalProps> = ({ goal, onCloseModal }) => {
   const [currentInput, setCurrentInput] = useState('0');
+  const { mutate: updatePostMutate } = useUpdatePost();
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (currentInput && goal.current + parseInt(currentInput) <= goal.goal) {
-      const newGoal: GoalType = {
-        ...goal,
-        current: goal.current + parseInt(currentInput),
+      const newPost: { id: string; post: PostReqType } = {
+        id: goal.id,
+        post: {
+          title: goal.title,
+          goal: goal.goal,
+          unit: goal.unit,
+          current: goal.current + parseInt(currentInput),
+        },
       };
 
-      onUpdate(newGoal);
+      updatePostMutate(newPost);
       onCloseModal('edit');
       return;
     } else if (goal.current + parseInt(currentInput) > goal.goal) {

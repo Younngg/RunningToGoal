@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { authService } from '../App';
 import Button from '../components/Button/Button';
@@ -7,46 +7,43 @@ import CurrentModal from '../components/CurrentModal/CurrentModal';
 import DeleteModal from '../components/DeleteModal/DeleteModal';
 import GoalBox from '../components/GoalBox/GoalBox';
 import GoalForm from '../components/GoalForm/GoalForm';
+import useDeletePost from '../queries/useDeletePost';
+import useGetPosts from '../queries/useGetPosts';
 import { PageContainer } from '../styles/page';
 import PostRepository from './../services/postRepository';
-import type { GoalsResType, GoalType } from './../types/goal';
+import type { GoalsResType, GoalType, PostResType } from './../types/goal';
+import useCreatePost from './../queries/useCreatePost';
+import useUpdatePost from './../queries/useUpdatePost';
 
 interface HomeProps {
   postRepository: PostRepository;
 }
 
-const Home: FC<HomeProps> = ({ postRepository }) => {
-  const { state } = useLocation();
-  const [userId, setUserId] = useState(state && state.id);
+const userId = localStorage.getItem('token');
 
-  const [data, setData] = useState<GoalsResType>({});
+const Home: FC<HomeProps> = ({ postRepository }) => {
+  const navigate = useNavigate();
 
   const [isWriting, setIsWriting] = useState(false);
 
   const [editingGoal, setEditingGoal] = useState<GoalType | null>(null);
   const [deletingGoal, setDeletingGoal] = useState<GoalType | null>(null);
 
-  useEffect(() => {
-    if (!userId) {
-      return;
-    }
-    const stopSync = postRepository.syncPosts(userId, (posts: GoalsResType) => {
-      setData(posts);
-    });
-
-    return () => stopSync();
-  }, [postRepository, userId]);
+  const { data: posts } = useGetPosts();
+  const { mutate: deletePostMutate } = useDeletePost();
 
   useEffect(() => {
     authService.onAuthChange((user: { uid: any }) => {
       if (user) {
-        setUserId(user.uid);
-      } else setUserId(null);
+        localStorage.setItem('token', user.uid);
+      }
     });
   }, []);
 
   const onLogout = () => {
     authService.logout();
+    localStorage.removeItem('token');
+    navigate('/');
   };
 
   const onCloseForm = () => {
@@ -63,32 +60,13 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
   };
 
   const onDelete = (id: string) => {
-    setData((cur: GoalsResType) => {
-      const updated = { ...cur };
-      delete updated[id];
-      return updated;
-    });
-    postRepository.removePost(userId, id);
+    deletePostMutate(id);
     setDeletingGoal(null);
-  };
-
-  const onCreatOrUpdateGoal = (goal: GoalType) => {
-    setData((goals) => {
-      const updated = { ...goals };
-      updated[goal.id] = goal;
-      return updated;
-    });
-
-    postRepository.savePost(userId, goal);
   };
 
   const getGoalForEdit = (current: GoalType) => {
     setEditingGoal(current);
   };
-
-  if (!userId) {
-    return <Navigate to='/login' />;
-  }
 
   return (
     <PageContainer>
@@ -101,29 +79,19 @@ const Home: FC<HomeProps> = ({ postRepository }) => {
           onClick={() => setIsWriting(true)}
         />
       </ButtonContainer>
-      {isWriting && (
-        <GoalForm
-          postRepository={postRepository}
-          onCloseForm={onCloseForm}
-          onCreatOrUpdateGoal={onCreatOrUpdateGoal}
-        />
-      )}
-      {Object.keys(data).map((key) => (
-        <GoalBox
-          data={data[key]}
-          key={key}
-          onDelete={onDelete}
-          getGoalForEdit={getGoalForEdit}
-          getGoalForDelete={getGoalForDelete}
-          onCreatOrUpdateGoal={onCreatOrUpdateGoal}
-        />
-      ))}
+      {isWriting && <GoalForm onCloseForm={onCloseForm} />}
+      {posts &&
+        posts.map((post: PostResType) => (
+          <GoalBox
+            data={post}
+            key={post.id}
+            onDelete={onDelete}
+            getGoalForEdit={getGoalForEdit}
+            getGoalForDelete={getGoalForDelete}
+          />
+        ))}
       {editingGoal ? (
-        <CurrentModal
-          goal={editingGoal}
-          onCloseModal={onCloseModal}
-          onUpdate={onCreatOrUpdateGoal}
-        />
+        <CurrentModal goal={editingGoal} onCloseModal={onCloseModal} />
       ) : null}
       {deletingGoal ? (
         <DeleteModal

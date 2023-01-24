@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 import { postRepository } from '../../App';
+
 import { GoalType } from '../../types/goal';
 import Button from '../Button/Button';
 import GoalForm from '../GoalForm/GoalForm';
@@ -11,25 +12,17 @@ interface GoalBoxProps {
   onDelete: (id: string) => void;
   getGoalForEdit: (current: GoalType) => void;
   getGoalForDelete: (current: GoalType) => void;
-  onCreatOrUpdateGoal: (goal: GoalType) => void;
 }
 
 const GoalBox: FC<GoalBoxProps> = ({
   data,
-  onDelete,
   getGoalForEdit,
-  onCreatOrUpdateGoal,
   getGoalForDelete,
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   return isUpdating ? (
-    <GoalForm
-      postRepository={postRepository}
-      onCloseForm={() => setIsUpdating(false)}
-      onCreatOrUpdateGoal={onCreatOrUpdateGoal}
-      currentGoal={data}
-    />
+    <GoalForm onCloseForm={() => setIsUpdating(false)} currentGoal={data} />
   ) : (
     <Container>
       <Top>
