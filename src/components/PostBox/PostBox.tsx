@@ -1,28 +1,26 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import styled from 'styled-components';
-import { postRepository } from '../../App';
-
-import { GoalType } from '../../types/goal';
+import type { PostResType } from '../../types/post';
 import Button from '../Button/Button';
-import GoalForm from '../GoalForm/GoalForm';
+import PostForm from '../PostForm/PostForm';
 import ProgressBar from '../ProgressBar/ProgressBar';
 
-interface GoalBoxProps {
-  data: GoalType;
+interface PostBoxProps {
+  data: PostResType;
   onDelete: (id: string) => void;
-  getGoalForEdit: (current: GoalType) => void;
-  getGoalForDelete: (current: GoalType) => void;
+  getPostForEdit: (current: PostResType) => void;
+  getPostForDelete: (current: PostResType) => void;
 }
 
-const GoalBox: FC<GoalBoxProps> = ({
+const PostBox: FC<PostBoxProps> = ({
   data,
-  getGoalForEdit,
-  getGoalForDelete,
+  getPostForEdit,
+  getPostForDelete,
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   return isUpdating ? (
-    <GoalForm onCloseForm={() => setIsUpdating(false)} currentGoal={data} />
+    <PostForm onCloseForm={() => setIsUpdating(false)} currentPost={data} />
   ) : (
     <Container>
       <Top>
@@ -42,16 +40,16 @@ const GoalBox: FC<GoalBoxProps> = ({
           />
           <Button
             content={`${process.env.PUBLIC_URL}/minus.png`}
-            onClick={() => getGoalForDelete(data)}
+            onClick={() => getPostForDelete(data)}
           />
         </ButtonContainer>
       </Top>
-      <ProgressBar data={data} getGoalForEdit={getGoalForEdit} />
+      <ProgressBar data={data} getPostForEdit={getPostForEdit} />
     </Container>
   );
 };
 
-export default GoalBox;
+export default PostBox;
 
 const Container = styled.div`
   width: 100%;

@@ -1,25 +1,25 @@
 import React, { FC, useState, FormEvent } from 'react';
 import styled from 'styled-components';
 import Button from '../Button/Button';
-import type { GoalType, PostReqType } from './../../types/goal';
-import { Input } from './../../styles/form';
+import type { PostReqType, PostResType } from '../../types/post';
+import { Input } from '../../styles/form';
 import useCreatePost from '../../queries/useCreatePost';
-import useUpdatePost from './../../queries/useUpdatePost';
+import useUpdatePost from '../../queries/useUpdatePost';
 
-interface GoalFormProps {
+interface PostFormProps {
   onCloseForm: () => void;
-  currentGoal?: GoalType;
+  currentPost?: PostResType;
 }
 
-const GoalForm: FC<GoalFormProps> = ({ onCloseForm, currentGoal }) => {
-  const [goalInput, setGoalInput] = useState(
-    currentGoal ? currentGoal.title : ''
+const PostForm: FC<PostFormProps> = ({ onCloseForm, currentPost }) => {
+  const [postInput, setPostInput] = useState(
+    currentPost ? currentPost.title : ''
   );
-  const [goalValueInput, setGoalValueInput] = useState(
-    currentGoal ? currentGoal.goal.toString() : '0'
+  const [postValueInput, setPostValueInput] = useState(
+    currentPost ? currentPost.goal.toString() : '0'
   );
   const [unitInput, setUnitInput] = useState(
-    currentGoal ? currentGoal.unit : ''
+    currentPost ? currentPost.unit : ''
   );
 
   const { mutate: createPostMutate } = useCreatePost();
@@ -28,14 +28,14 @@ const GoalForm: FC<GoalFormProps> = ({ onCloseForm, currentGoal }) => {
   const onCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (goalInput && unitInput && goalValueInput !== '0') {
-      const newGoal: PostReqType = {
-        title: goalInput,
-        goal: parseInt(goalValueInput),
+    if (postInput && unitInput && postValueInput !== '0') {
+      const newPost: PostReqType = {
+        title: postInput,
+        goal: parseInt(postValueInput),
         unit: unitInput,
       };
 
-      createPostMutate(newGoal);
+      createPostMutate(newPost);
       onCloseForm();
       return;
     } else alert('모두 입력해주세요');
@@ -44,51 +44,51 @@ const GoalForm: FC<GoalFormProps> = ({ onCloseForm, currentGoal }) => {
   const onUpdate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (
-      goalInput &&
+      postInput &&
       unitInput &&
-      goalValueInput !== '0' &&
-      parseInt(goalValueInput) >= currentGoal!.current
+      postValueInput !== '0' &&
+      parseInt(postValueInput) >= currentPost!.current
     ) {
-      const updateGoal: { id: string; post: PostReqType } = {
-        id: currentGoal!.id,
+      const updatePost: { id: string; post: PostReqType } = {
+        id: currentPost!.id,
         post: {
-          title: goalInput,
-          goal: parseInt(goalValueInput),
+          title: postInput,
+          goal: parseInt(postValueInput),
           unit: unitInput,
-          current: currentGoal!.current,
+          current: currentPost!.current,
         },
       };
-      updatePostMutate(updateGoal);
+      updatePostMutate(updatePost);
       onCloseForm();
       return;
-    } else if (parseInt(goalValueInput) < currentGoal!.current) {
+    } else if (parseInt(postValueInput) < currentPost!.current) {
       alert('현재 달성한 값 이하로 변경할 수 없습니다.');
-    } else if (!(goalInput && unitInput && goalValueInput !== '0')) {
+    } else if (!(postInput && unitInput && postValueInput !== '0')) {
       alert('모두 입력해주세요.');
     }
   };
 
   return (
     <Container>
-      <form onSubmit={currentGoal ? onUpdate : onCreate}>
+      <form onSubmit={currentPost ? onUpdate : onCreate}>
         <Top>
-          <Label htmlFor='goal'>목표</Label>
+          <Label htmlFor='post'>목표</Label>
           <Input
             type='text'
-            id='goal'
+            id='post'
             long
-            value={goalInput}
-            onChange={(e) => setGoalInput(e.target.value)}
+            value={postInput}
+            onChange={(e) => setPostInput(e.target.value)}
           />
         </Top>
         <Bottom>
           <div>
-            <Label htmlFor='goalValue'>목표치</Label>
+            <Label htmlFor='postValue'>목표치</Label>
             <Input
               type='number'
-              id='goalValue'
-              value={goalValueInput}
-              onChange={(e) => setGoalValueInput(e.target.value)}
+              id='postValue'
+              value={postValueInput}
+              onChange={(e) => setPostValueInput(e.target.value)}
             />
           </div>
           <div>
@@ -116,7 +116,7 @@ const GoalForm: FC<GoalFormProps> = ({ onCloseForm, currentGoal }) => {
   );
 };
 
-export default GoalForm;
+export default PostForm;
 
 const Container = styled.div`
   width: 100%;
