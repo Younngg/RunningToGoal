@@ -1,8 +1,9 @@
-import React, { FC, Dispatch, useState, FormEvent } from 'react';
+import { FC, useState, FormEvent } from 'react';
 import styled from 'styled-components';
-import { GoalType } from './../../types/goal';
+import type { PostReqType, PostResType } from '../../types/post';
 import { Input } from './../../styles/form';
 import Button from '../Button/Button';
+import useUpdatePost from './../../queries/useUpdatePost';
 import {
   BackGround,
   ButtonContainer,
@@ -12,31 +13,32 @@ import {
 } from '../../styles/modal';
 
 interface CurrenModalProps {
-  goal: GoalType;
+  post: PostResType;
   onCloseModal: (modal: 'edit' | 'delete') => void;
-  onUpdate: (goal: GoalType) => void;
 }
 
-const CurrentModal: FC<CurrenModalProps> = ({
-  goal,
-  onCloseModal,
-  onUpdate,
-}) => {
+const CurrentModal: FC<CurrenModalProps> = ({ post, onCloseModal }) => {
   const [currentInput, setCurrentInput] = useState('0');
+  const { mutate: updatePostMutate } = useUpdatePost();
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (currentInput && goal.current + parseInt(currentInput) <= goal.goal) {
-      const newGoal: GoalType = {
-        ...goal,
-        current: goal.current + parseInt(currentInput),
+    if (currentInput && post.current + parseInt(currentInput) <= post.goal) {
+      const newPost: { id: string; post: PostReqType } = {
+        id: post.id,
+        post: {
+          title: post.title,
+          goal: post.goal,
+          unit: post.unit,
+          current: post.current + parseInt(currentInput),
+        },
       };
 
-      onUpdate(newGoal);
+      updatePostMutate(newPost);
       onCloseModal('edit');
       return;
-    } else if (goal.current + parseInt(currentInput) > goal.goal) {
+    } else if (post.current + parseInt(currentInput) > post.goal) {
       alert('목표치 이상 입력할 수 없습니다.');
     }
   };
@@ -44,7 +46,7 @@ const CurrentModal: FC<CurrenModalProps> = ({
     <BackGround>
       <Modal>
         <Title>
-          <span>🏃‍♀️{goal.title}</span>
+          <span>🏃‍♀️{post.title}</span>
           목표와
         </Title>
         <EditForm onSubmit={onSubmit}>
@@ -53,7 +55,7 @@ const CurrentModal: FC<CurrenModalProps> = ({
               type='number'
               defaultValue='0'
               onChange={(e) => setCurrentInput(e.target.value)}
-              max={goal.goal}
+              max={post.goal}
             />
             <Message>권 더 가까워졌어요.</Message>
           </div>

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 import Button from '../Button/Button';
 import {
@@ -8,16 +8,16 @@ import {
   Modal,
   Title,
 } from './../../styles/modal';
-import type { GoalType } from './../../types/goal';
+import type { PostResType } from '../../types/post';
 
 interface DeleteModalProps {
-  goal: GoalType;
+  post: PostResType;
   onCloseModal: (modal: 'edit' | 'delete') => void;
   onDelete: (id: string) => void;
 }
 
 const DeleteModal: FC<DeleteModalProps> = ({
-  goal,
+  post,
   onCloseModal,
   onDelete,
 }) => {
@@ -25,10 +25,10 @@ const DeleteModal: FC<DeleteModalProps> = ({
     <BackGround>
       <Modal>
         <ModalTitle>삭제</ModalTitle>
-        <Message>{goal.title} 목표를 삭제하시겠습니까?</Message>
+        <Message>{post.title} 목표를 삭제하시겠습니까?</Message>
         <ButtonContainer>
           <Button text='닫기' onClick={() => onCloseModal('delete')} />
-          <Button text='삭제하기' onClick={() => onDelete(goal.id)} />
+          <Button text='삭제하기' onClick={() => onDelete(post.id)} />
         </ButtonContainer>
       </Modal>
     </BackGround>

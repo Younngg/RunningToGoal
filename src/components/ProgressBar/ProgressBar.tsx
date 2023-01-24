@@ -1,13 +1,13 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styled, { css } from 'styled-components';
-import { GoalType } from '../../types/goal';
+import type { PostResType } from '../../types/post';
 
 interface ProgressBarProps {
-  data: GoalType;
-  getGoalForEdit: (current: GoalType) => void;
+  data: PostResType;
+  getPostForEdit: (current: PostResType) => void;
 }
 
-const ProgressBar: FC<ProgressBarProps> = ({ data, getGoalForEdit }) => {
+const ProgressBar: FC<ProgressBarProps> = ({ data, getPostForEdit }) => {
   const getPercent = () => {
     return (data.current / data.goal) * 100;
   };
@@ -17,7 +17,7 @@ const ProgressBar: FC<ProgressBarProps> = ({ data, getGoalForEdit }) => {
       <Bar percent={getPercent()}>
         <div>
           <EditCurrent>
-            <EditCurrentButton onClick={() => getGoalForEdit(data)}>
+            <EditCurrentButton onClick={() => getPostForEdit(data)}>
               <RunningMan src={`${process.env.PUBLIC_URL}/run2.png`} />
             </EditCurrentButton>
             <p className='infoMessage'>현재 값을 수정하려면 클릭해주세요!</p>
