@@ -15,6 +15,12 @@ import type { PostResType } from '../types/post';
 const Home = () => {
   const navigate = useNavigate();
 
+  const [user, setUser] = useState({
+    nickname: '',
+    profileImg:
+      'https://res.cloudinary.com/dv6tzjgu4/image/upload/v1671081256/elice/default-user_bvvgsf.png',
+  });
+
   const [isWriting, setIsWriting] = useState(false);
 
   const [editingPost, setEditingPost] = useState<PostResType | null>(null);
@@ -24,11 +30,14 @@ const Home = () => {
   const { mutate: deletePostMutate } = useDeletePost();
 
   useEffect(() => {
-    authService.onAuthChange((user: { uid: any }) => {
-      if (user) {
-        localStorage.setItem('token', user.uid);
+    authService.onAuthChange(
+      (user: { uid: string; displayName: string; photoURL: string }) => {
+        if (user) {
+          localStorage.setItem('token', user.uid);
+          setUser({ nickname: user.displayName, profileImg: user.photoURL });
+        }
       }
-    });
+    );
   }, []);
 
   const onLogout = () => {
@@ -62,7 +71,8 @@ const Home = () => {
   return (
     <PageContainer>
       <Title>
-        <span>정지영</span> 님의 목표를 향한 달리기
+        <ProfileImg src={user.profileImg} alt='profile image' />
+        <span>{user.nickname}</span> 님의 목표를 향한 달리기🏃‍♂️
       </Title>
       <ButtonContainer>
         <Button
@@ -81,6 +91,9 @@ const Home = () => {
             getPostForDelete={getPostForDelete}
           />
         ))}
+      {posts && posts.length === 0 ? (
+        <EmptyMessage>목표를 추가해보세요!</EmptyMessage>
+      ) : null}
       {editingPost ? (
         <CurrentModal post={editingPost} onCloseModal={onCloseModal} />
       ) : null}
@@ -101,6 +114,8 @@ export default Home;
 const Title = styled.h1`
   font-size: 1.6rem;
   margin-bottom: 36px;
+  display: flex;
+  align-items: center;
 
   span {
     font-size: 1.8rem;
@@ -108,8 +123,25 @@ const Title = styled.h1`
   }
 `;
 
+const ProfileImg = styled.img`
+  border-radius: 50%;
+  border: 2px solid white;
+  width: 5rem;
+  margin-right: 1rem;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: end;
   margin-bottom: 3rem;
+`;
+
+const EmptyMessage = styled.p`
+  font-size: 1.7rem;
+  font-weight: bold;
+  height: 30rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10rem;
 `;
