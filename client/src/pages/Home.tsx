@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { authService } from '../App';
 import Button from '../components/Button/Button';
@@ -11,15 +11,13 @@ import useDeletePost from '../queries/useDeletePost';
 import useGetPosts from '../queries/useGetPosts';
 import { PageContainer } from '../styles/page';
 import type { PostResType } from '../types/post';
+import { useRecoilValue } from 'recoil';
+import { userState } from './../states/userState';
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState({
-    nickname: '',
-    profileImg:
-      'https://res.cloudinary.com/dv6tzjgu4/image/upload/v1671081256/elice/default-user_bvvgsf.png',
-  });
+  const user = useRecoilValue(userState);
 
   const [isWriting, setIsWriting] = useState(false);
 
@@ -29,21 +27,10 @@ const Home = () => {
   const { data: posts } = useGetPosts();
   const { mutate: deletePostMutate } = useDeletePost();
 
-  useEffect(() => {
-    authService.onAuthChange(
-      (user: { uid: string; displayName: string; photoURL: string }) => {
-        if (user) {
-          localStorage.setItem('token', user.uid);
-          setUser({ nickname: user.displayName, profileImg: user.photoURL });
-        }
-      }
-    );
-  }, []);
-
   const onLogout = () => {
     authService.logout();
     localStorage.removeItem('token');
-    navigate('/');
+    navigate('/login');
   };
 
   const onCloseForm = () => {
@@ -71,8 +58,15 @@ const Home = () => {
   return (
     <PageContainer>
       <Title>
-        <ProfileImg src={user.profileImg} alt='profile image' />
-        <span>{user.nickname}</span> 님의 목표를 향한 달리기🏃‍♂️
+        <ProfileImg
+          src={
+            user
+              ? user.profileImg
+              : 'https://res.cloudinary.com/dv6tzjgu4/image/upload/v1671081256/elice/default-user_bvvgsf.png'
+          }
+          alt='profile image'
+        />
+        <span>{user && user.nickname}</span> 님의 목표를 향한 달리기🏃‍♂️
       </Title>
       <ButtonContainer>
         <Button

@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { authService } from '../App';
@@ -13,20 +12,13 @@ const Login = () => {
       localStorage.setItem('token', data.user.uid);
       navigate('/');
     } catch (err) {
-      console.log(err);
+      alert('로그인에 실패했습니다.');
     }
   };
 
-  useEffect(() => {
-    authService.onAuthChange((user: { id: string }) => {
-      localStorage.setItem('token', user.id);
-      user && navigate('id');
-    });
-  });
-
   return (
     <Container>
-      <Button text='로그인' onClick={onLogin} />
+      <LoginButton text='로그인' onClick={onLogin} />
     </Container>
   );
 };
@@ -39,4 +31,8 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const LoginButton = styled(Button)`
+  width: 100rem;
 `;
