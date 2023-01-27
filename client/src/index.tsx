@@ -8,6 +8,7 @@ import { theme } from './styles/theme';
 import { QueryClient } from '@tanstack/react-query';
 import { QueryClientProvider } from '@tanstack/react-query';
 import axios from 'axios';
+import { RecoilRoot } from 'recoil';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -21,9 +22,11 @@ root.render(
   <React.StrictMode>
     <GlobalStyle />
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
+      <RecoilRoot>
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
+      </RecoilRoot>
     </QueryClientProvider>
   </React.StrictMode>
 );
