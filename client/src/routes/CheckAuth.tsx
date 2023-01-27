@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { authService } from '../App';
+import { useSetRecoilState } from 'recoil';
+import { userState } from '../states/userState';
 
 const CheckAuth = ({ children }: { children: JSX.Element }) => {
   const pathname = window.location.pathname;
-  const [user, setUser] = useState<{
-    nickname: string;
-    profileImg: string;
-  } | null>(null);
+  const setUser = useSetRecoilState(userState);
 
   const token = localStorage.getItem('token');
 
@@ -20,7 +19,7 @@ const CheckAuth = ({ children }: { children: JSX.Element }) => {
         }
       }
     );
-  }, []);
+  }, [setUser]);
 
   if (!token && pathname === '/') {
     return <Navigate to='/login' />;

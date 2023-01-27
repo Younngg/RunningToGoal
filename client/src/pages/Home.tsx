@@ -11,11 +11,13 @@ import useDeletePost from '../queries/useDeletePost';
 import useGetPosts from '../queries/useGetPosts';
 import { PageContainer } from '../styles/page';
 import type { PostResType } from '../types/post';
+import { useRecoilValue } from 'recoil';
+import { userState } from './../states/userState';
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const user = useLocation().state;
+  const user = useRecoilValue(userState);
 
   const [isWriting, setIsWriting] = useState(false);
 
