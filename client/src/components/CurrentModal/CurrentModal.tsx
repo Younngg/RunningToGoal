@@ -57,7 +57,7 @@ const CurrentModal: FC<CurrenModalProps> = ({ post, onCloseModal }) => {
               onChange={(e) => setCurrentInput(e.target.value)}
               max={post.goal}
             />
-            <Message>권 더 가까워졌어요.</Message>
+            <Message>{post.unit} 더 가까워졌어요.</Message>
           </div>
           <ButtonContainer>
             <Button text='닫기' onClick={() => onCloseModal('edit')} />
